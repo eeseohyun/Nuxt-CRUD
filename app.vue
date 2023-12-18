@@ -1,9 +1,9 @@
+<script setup></script>
+
 <template>
   <div>
-    <NuxtLayout>
+    <Header>
       <nuxt-page />
-    </NuxtLayout>
+    </Header>
   </div>
 </template>
-
-<script setup></script>

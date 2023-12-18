@@ -1,40 +1,39 @@
 {
-  "boards": [
+  "posts": [
     {
       "id": 1,
-      "description": "Lindsay Walton",
+      "body": "Lindsay Walton",
       "title": "Front-end Developer",
-      "updatedDate": "2022-12-11"
+      "updatedDate": "2022-12-11",
+      "tags": ["vue", "coding"]
     },
     {
       "id": 2,
-      "description": "Courtney Henry",
-      "title": "Designer",
-      "updatedDate": "2023-06-05"
+      "body": "Lindsay Walton",
+      "title": "Front-end Developer",
+      "updatedDate": "2022-12-11",
+      "tags": ["css", "coding"]
     },
     {
       "id": 3,
-      "description": "Tom Cook",
-      "title": "Director of Product",
-      "updatedDate": "2023-01-01"
+      "body": "Lindsay Walton",
+      "title": "Front-end Developer",
+      "updatedDate": "2022-12-11",
+      "tags": ["javascript", "coding"]
     },
     {
       "id": 4,
-      "description": "Whitney Francis",
-      "title": "Copywriter",
-      "updatedDate": "2020-03-01"
+      "body": "Lindsay Walton",
+      "title": "Front-end Developer",
+      "updatedDate": "2022-12-11",
+      "tags": ["typescript", "coding"]
     },
     {
       "id": 5,
-      "description": "Leonard Krasner",
-      "title": "Senior Designer",
-      "updatedDate": "2023-09-15"
-    },
-    {
-      "id": 6,
-      "description": "Floyd Miles",
-      "title": "Principal Designer",
-      "updatedDate": "2023-12-01"
+      "body": "Lindsay Walton",
+      "title": "Front-end Developer",
+      "updatedDate": "2022-12-11",
+      "tags": ["react", "coding"]
     }
   ]
 }
