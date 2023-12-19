@@ -6,7 +6,7 @@ const getPosts = () => {
   const error = ref(null);
   const load = async () => {
     try {
-      let data = await axios.get('http://localhost:3000/posts');
+      let data = await useFetch('http://localhost:3000/posts');
       if (!data.ok) {
         throw Error('데이터를 읽어올 수 없습니다!');
       }
