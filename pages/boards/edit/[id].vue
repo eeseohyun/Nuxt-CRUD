@@ -44,7 +44,6 @@
                   id="title"
                   autocomplete="title"
                   v-model="editTitle"
-                  value="selectPost.title"
                   class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -63,7 +62,6 @@
                 name="body"
                 rows="10"
                 v-model="editBody"
-                value="selectPost.body"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-lime-400 sm:text-sm sm:leading-6"
               />
             </div>
@@ -91,26 +89,26 @@
   </form>
 </template>
 <script setup>
-import { ref } from "vue";
-import { useRoute } from "vue-router";
-import Loader from "~/components/Loader.vue";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import Loader from '~/components/Loader.vue';
 
 const selectPost = ref([]);
-const editTitle = ref("");
-const editBody = ref("");
-const editTags = ref("");
-const route = useRoute();
-const id = route.params.id;
+const editTitle = ref('');
+const editBody = ref('');
+const editTags = ref('');
+const router = useRouter();
+const id = router.params.id;
 const error = ref(null);
-let isLoading = false;
+const isLoading = ref(false);
 const load = async () => {
   try {
     isLoading = true;
-    let response = await fetch("http://localhost:3000/posts" + id, {
-      method: "GET",
+    let response = await fetch('http://localhost:3000/posts' + id, {
+      method: 'GET',
     });
     if (!response.ok) {
-      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
+      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
     }
     isLoading = false;
     selectPost.value = await response.json();
@@ -120,10 +118,10 @@ const load = async () => {
 };
 load();
 const editPost = async () => {
-  const updateDate = new Date().toISOString().split("T")[0];
+  const updateDate = new Date().toISOString().split('T')[0];
   try {
-    const response = await fetch("http://localhost:3000/posts/" + id, {
-      method: "PUT",
+    const response = await fetch('http://localhost:3000/posts/' + id, {
+      method: 'PUT',
       body: JSON.stringify({
         title: editTitle.value,
         body: editBody.value,
@@ -132,12 +130,12 @@ const editPost = async () => {
       }),
     });
     if (!response.ok) {
-      throw Error("게시글 수정에 실패하였습니다.");
+      throw Error('게시글 수정에 실패하였습니다.');
     }
 
     selectPost.value = response.data().json();
-    alert("게시글을 수정하였습니다.");
-    navigateTo("/boards/" + id);
+    alert('게시글을 수정하였습니다.');
+    navigateTo('/boards/' + id);
   } catch (error) {
     console.log(error.message);
   }
