@@ -1,16 +1,17 @@
 <template>
   <div v-if="isLoading"><Loader /></div>
-
-  <tr>
+  <tr :key="post.id">
     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
       <p class="text-gray-900 whitespace-no-wrap">{{ post.id }}</p>
     </td>
     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-      <NuxtLink to="/boards/{{post.id}}"
-        ><p class="text-gray-900 whitespace-no-wrap">
-          {{ post.title }}
-        </p></NuxtLink
+      <p
+        role="button"
+        class="text-gray-900 whitespace-no-wrap"
+        @click="moveToDetailPage(post.id)"
       >
+        {{ post.title }}
+      </p>
     </td>
     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
       <p class="text-gray-900 whitespace-no-wrap">{{ post.updatedDate }}</p>
@@ -75,11 +76,12 @@
   </tr>
 </template>
 <script setup>
-import { defineProps } from "vue";
-import Loader from "./Loader.vue";
-const props = defineProps({
-  post: { type: Object, required: true },
-  isLoading: { type: Boolean, required: true },
-});
+import { defineProps } from 'vue';
+import Loader from './Loader.vue';
+const { post, isLoading } = defineProps(['post', 'isLoading']);
+
+const moveToDetailPage = (id) => {
+  navigateTo('/boards/' + id);
+};
 </script>
 <style></style>
