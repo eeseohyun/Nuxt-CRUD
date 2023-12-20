@@ -39,31 +39,33 @@
           </div>
         </div>
       </div>
-      <PostList :posts="posts" />
+      <PostList :posts="posts" :isLoading="isLoading" />
     </div>
   </div>
 </template>
 <script setup>
-import PostList from '../components/PostList.vue';
+import PostList from "../components/PostList.vue";
 const posts = ref([]);
 const error = ref(null);
 let isLoading = false;
 const load = async () => {
   try {
-    let response = await useFetch('http://localhost:3000/posts');
+    isLoading = true;
+    let response = await fetch("http://localhost:3000/posts", {
+      method: "GET",
+    });
     if (!response.ok) {
-      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
+      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
     }
+    isLoading = false;
     posts.value = await response.json();
-
-    console.log(posts.value);
   } catch (err) {
     error.value = err.message;
   }
 };
 load();
 const moveToCreatePage = () => {
-  navigateTo('/boards/create');
+  navigateTo("/boards/create");
 };
 </script>
 <style></style>
