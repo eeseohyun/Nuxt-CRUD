@@ -1,6 +1,6 @@
 <template>
   <div class="post-list">
-    <table class="min-w-full flex flex-col leading-normal">
+    <table class="min-w-full leading-normal">
       <thead>
         <tr>
           <th
@@ -34,22 +34,49 @@
         />
       </tbody>
     </table>
-    <Pagination :posts="posts" :currentPage="currentPage" :perPage="perPage" />
+    <Pagination :goToPrev="goToPrev()" :goToNext="goToNext()" />
   </div>
 </template>
 <script setup>
-import Post from "./Post.vue";
-import Pagination from "./Pagination.vue";
-import { defineProps } from "vue";
+import Post from './Post.vue';
+import Pagination from './Pagination.vue';
+import { ref, onMounted } from 'vue';
 
-defineProps({
-  posts: { type: Array, required: true },
-  isLoading: { type: Boolean, required: true },
-});
-let currentPage = ref(1);
+const currentPage = ref(1);
 const perPage = 10;
-const paginatedPosts = computed(() =>
-  posts.slice((currentPage.value - 1) * perPage, currentPage.value * perPage)
-);
+const posts = ref([]);
+const isLoading = ref(false);
+const totalPages = computed(() => Math.ceil(posts.value.length / perPage));
+const paginatedPosts = computed(() => {
+  const startIndex = (currentPage.value - 1) * perPage;
+  const endIndex = currentPage.value * perPage;
+  return posts.value.slice(startIndex, endIndex);
+});
+const fetchPosts = async () => {
+  try {
+    isLoading.value = true;
+    const response = await fetch('http://localhost:3000/posts');
+    if (!response.ok) {
+      throw Error('⚠️ 데이터를 가져올 수 없습니다!');
+    }
+    posts.value = await response.json();
+    isLoading.value = false;
+  } catch (error) {
+    console.error('데이터 로딩 중 에러:', error);
+    isLoading.value = false;
+  }
+};
+const goToPrev = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const goToNext = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+onMounted(fetchPosts);
 </script>
 <style></style>
