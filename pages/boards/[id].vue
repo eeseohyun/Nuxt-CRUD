@@ -2,12 +2,21 @@
   <div
     class="bg-gray-100 flex flex-col items-center justify-center h-screen px-2 py-4"
   >
-    <div class="flex flex-col w-full lg:w-1/2 h-full bg-white px-9">
+    <div class="flex flex-col w-full lg:w-1/2 h-full bg-white px-9 py-3">
       <div class="w-auto flex justify-between items-center p-3">
-        <h2 class="text-xl font-semibold">{{ currentPost.title }}</h2>
+        <div>
+          <h2 class="text-xl font-semibold">{{ currentPost.title }}</h2>
+          <div class="flex gap-3">
+            <span class="text-sm text-gray-500">{{ currentPost.tags }}</span>
+            <span class="text-sm text-gray-500">{{
+              currentPost.updatedDate
+            }}</span>
+          </div>
+        </div>
+
         <div class="flex gap-2">
           <button
-            @click="moveToEditPage()"
+            @click="moveToEditPage(currentPost.id)"
             class="flex items-center bg-gray-300 text-white font-semibold py-2 px-2 rounded-md transition-colors duration-300"
           >
             <p class="text-white">수정</p>
@@ -19,11 +28,10 @@
             <p class="text-white">삭제</p>
           </button>
         </div>
-        <span>{{ currentPost.tags }}</span>
       </div>
 
       <hr />
-      <div class="py-10 w-auto h-[400px] border-b border-1">
+      <div class="py-10 w-auto h-[400px] border-b border-1 p-3">
         <p class="overflow-hidden">
           {{ currentPost.body }}
         </p>
@@ -41,21 +49,22 @@
   </div>
 </template>
 <script setup>
-import { useRoute } from "vue-router";
+import { useRoute } from 'vue-router';
 const route = useRoute();
 const id = route.params.id;
 const currentPost = ref([]);
 const error = ref(null);
-const moveToEditPage = () => {
-  navigateTo("/boards/edit/" + id);
+
+const moveToEditPage = (postId) => {
+  navigateTo('/boards/edit/' + postId);
 };
 
 const moveToListPage = () => {
-  navigateTo("/boards");
+  navigateTo('/boards');
 };
 
 const callConfirm = () => {
-  if (confirm("정말 삭제하시겠습니까?")) {
+  if (confirm('정말 삭제하시겠습니까?')) {
     deletePost();
     moveToListPage();
   } else {
@@ -64,26 +73,24 @@ const callConfirm = () => {
 };
 const deletePost = async () => {
   try {
-    const response = await fetch("http://localhost:3000/posts/" + id, {
-      method: "DELETE",
+    const response = await fetch('http://localhost:3000/posts/' + id, {
+      method: 'DELETE',
     });
     if (!response.ok) {
-      throw Error("게시글 삭제에 실패하였습니다.");
+      throw Error('게시글 삭제에 실패하였습니다.');
     }
-    alert("삭제가 완료되었습니다.");
+    alert('삭제가 완료되었습니다.');
   } catch (error) {
     console.log(error.message);
   }
 };
 const load = async () => {
   try {
-    let response = await useFetch("http://localhost:3000/posts/" + id);
+    let response = await fetch('http://localhost:3000/posts/' + id);
     if (!response.ok) {
-      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
+      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
     }
     currentPost.value = await response.json();
-
-    console.log(posts.value);
   } catch (err) {
     error.value = err.message;
   }
