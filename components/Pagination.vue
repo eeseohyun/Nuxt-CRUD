@@ -7,14 +7,14 @@
     </span>
     <div class="inline-flex mt-2 xs:mt-0">
       <button
-        @click.prevent="goToPrev"
+        @click="currentPage - 1"
         class="text-sm text-indigo-50 transition duration-150 hover:bg-lime-600 bg-lime-500 font-semibold py-2 px-4 rounded-l"
       >
         ﹤
       </button>
       &nbsp; &nbsp;
       <button
-        @click.prevent="goToNext"
+        @click="current + 1"
         class="text-sm text-indigo-50 transition duration-150 hover:bg-lime-600 bg-lime-500 font-semibold py-2 px-4 rounded-r"
       >
         ﹥
@@ -23,6 +23,8 @@
   </div>
 </template>
 <script setup>
-const { goToNext, goToPrev } = defineProps(['goToNext', 'goToPrev']);
+import { defineProps, defineEmits } from "vue";
+const emit = defineEmits(["currentPage"]);
+const { totalPages } = defineProps(["totalPages"]);
 </script>
 <style></style>
