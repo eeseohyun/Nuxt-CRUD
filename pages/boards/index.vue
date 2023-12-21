@@ -15,6 +15,7 @@
       <div class="w-full flex justify-center p-1 mb-4">
         <div class="relative w-full">
           <input
+            v-model="searchText"
             type="text"
             class="w-full bg-white py-2 pl-10 pr-4 rounded-lg focus:outline-none border-2 border-gray-100 focus:border-black transition-colors duration-300"
           />
@@ -39,17 +40,45 @@
           </div>
         </div>
       </div>
-      <PostList />
+      <PostList :fileteredPosts="fileteredPosts" />
     </div>
   </div>
 </template>
 <script setup>
-import PostList from '../components/PostList.vue';
+const posts = ref([]);
+const searchText = ref("");
+const isLoading = ref(false);
 
-const error = ref(null);
+const fetchPosts = async () => {
+  try {
+    isLoading.value = true;
+    const response = await fetch("http://localhost:3000/posts", {
+      method: "GET",
+    });
+    if (!response.ok) {
+      throw Error("⚠️ 데이터를 가져올 수 없습니다!");
+    }
+    posts.value = await response.json();
+    isLoading.value = false;
+  } catch (error) {
+    console.error("데이터 로딩 중 에러:", error);
+    isLoading.value = false;
+  }
+};
+fetchPosts();
+const fileteredPosts = computed(() => {
+  // computed를 사용하면 캐싱기능 존재
+  if (searchText.value) {
+    return posts.value.filter((post) => {
+      return post.title && post.title.includes(searchText.value);
+    });
+  } else {
+    return posts.value;
+  }
+});
 
 const moveToCreatePage = () => {
-  navigateTo('/boards/create');
+  navigateTo("/boards/create");
 };
 </script>
 <style></style>
