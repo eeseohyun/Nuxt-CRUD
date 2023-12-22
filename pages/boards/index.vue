@@ -40,33 +40,36 @@
           </div>
         </div>
       </div>
-      <PostList :fileteredPosts="fileteredPosts" />
+      <PostList :filteredPosts="filteredPosts" />
     </div>
   </div>
 </template>
 <script setup>
+import PostList from '~/components/PostList.vue';
+import { ref, computed } from 'vue';
+
 const posts = ref([]);
-const searchText = ref("");
+const searchText = ref('');
 const isLoading = ref(false);
 
 const fetchPosts = async () => {
   try {
     isLoading.value = true;
-    const response = await fetch("http://localhost:3000/posts", {
-      method: "GET",
+    const response = await fetch('http://localhost:3000/posts', {
+      method: 'GET',
     });
     if (!response.ok) {
-      throw Error("⚠️ 데이터를 가져올 수 없습니다!");
+      throw Error('⚠️ 데이터를 가져올 수 없습니다!');
     }
     posts.value = await response.json();
     isLoading.value = false;
   } catch (error) {
-    console.error("데이터 로딩 중 에러:", error);
+    console.error('데이터 로딩 중 에러:', error);
     isLoading.value = false;
   }
 };
 fetchPosts();
-const fileteredPosts = computed(() => {
+const filteredPosts = computed(() => {
   // computed를 사용하면 캐싱기능 존재
   if (searchText.value) {
     return posts.value.filter((post) => {
@@ -78,7 +81,7 @@ const fileteredPosts = computed(() => {
 });
 
 const moveToCreatePage = () => {
-  navigateTo("/boards/create");
+  navigateTo('/boards/create');
 };
 </script>
 <style></style>

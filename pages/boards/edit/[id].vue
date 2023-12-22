@@ -11,42 +11,45 @@
             >
               게시글 수정
             </h2>
+
             <div class="mt-10">
               <label
                 for="tags"
-                class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+                class="text-sm font-medium text-gray-900 dark:text-gray-400"
                 >분류</label
               >
-              <select
-                v-model="tags"
-                class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 dark:bg-lime-700 dark:border-lime-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
-              >
-                <option value="all">전체</option>
-                <option value="FE">FE</option>
-                <option value="BE">BE</option>
-                <option value="design">디자인</option>
-                <option value="plan">기획</option>
-              </select>
-            </div>
-
-            <div class="mt-10">
-              <div>
-                <label
-                  for="title"
-                  class="block text-sm font-medium leading-6 text-gray-900"
-                  >제목</label
+              <div class="mt-2 w-1/2">
+                <select
+                  required
+                  v-model="tags"
+                  class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full py-1.5 px-2"
                 >
-
+                  <option value="all">전체</option>
+                  <option value="FE">FE</option>
+                  <option value="BE">BE</option>
+                  <option value="design">디자인</option>
+                  <option value="plan">기획</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-10">
+              <label
+                for="title"
+                class="block text-sm font-medium leading-6 text-gray-900"
+                >제목</label
+              >
+              <div class="mt-2">
                 <div
-                  class="mt-2 flex rounded-md shadow-sm ring-1 ring-inset ring-gray-400 focus-within:ring-2 focus-within:ring-inset focus-within:ring-lime-400 sm:max-w-md"
+                  class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2"
                 >
                   <input
                     type="text"
                     name="title"
                     id="title"
-                    autocomplete="title"
                     v-model="title"
-                    class="block w-full border-0 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    required
+                    placeholder="title"
+                    class="block flex-1 border-0 bg-transparent py-1.5 px-1 text-gray-900 placeholder:text-gray-400 focus:ring-black sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -63,7 +66,8 @@
                     name="body"
                     rows="10"
                     v-model="body"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-lime-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-lime-400 sm:text-sm sm:leading-6"
+                    required
+                    class="block w-full rounded-md border-0 py-1.5 px-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -71,7 +75,7 @@
           </div>
         </div>
 
-        <div class="mt-6 flex items-center justify-end gap-x-6">
+        <div class="mt-6 flex items-center justify-end self-end gap-x-6">
           <button
             type="button"
             class="text-sm font-semibold leading-6 text-gray-900"
@@ -80,7 +84,7 @@
             취소
           </button>
           <button
-            @click="editPost(id)"
+            @click="editPost"
             type="submit"
             class="rounded-md bg-lime-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-lime-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
@@ -92,13 +96,13 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
-const selectPost = ref({});
-const title = ref("");
-const body = ref("");
-const tags = ref("");
+const initialData = ref({});
+const title = ref('');
+const body = ref('');
+const tags = ref('');
 const router = useRouter();
 const error = ref(null);
 const cancelEdit = () => {
@@ -108,29 +112,32 @@ const load = async () => {
   const route = useRoute();
   const id = route.params.id;
   try {
-    let response = await fetch("http://localhost:3000/posts" + id, {
-      method: "GET",
+    let response = await fetch('http://localhost:3000/posts' + id, {
+      method: 'GET',
     });
     if (!response.ok) {
-      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
+      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
     }
-    selectPost.value = await response.json();
-    title.value = selectPost.value.title;
-    body.value = selectPost.value.body;
-    tags.value = selectPost.value.tags;
+    initialData.value = await response.json();
+    title.value = initialData.value.title;
+    body.value = initialData.value.body;
+    tags.value = initialData.value.tags;
   } catch (err) {
     error.value = err.message;
   }
 };
 
-const editPost = async (postId) => {
-  const updateDate = new Date().toISOString().split("T")[0];
+const editPost = async () => {
+  if (!isValidForm) {
+    return;
+  }
+
+  const updateDate = new Date().toISOString().split('T')[0];
+  const route = useRoute();
+  const id = route.params.id;
   try {
-    const response = await fetch(`http://localhost:3000/posts/${postId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await fetch(`http://localhost:3000/posts/${id}`, {
+      method: 'PUT',
       body: JSON.stringify({
         title: title.value,
         body: body.value,
@@ -139,17 +146,23 @@ const editPost = async (postId) => {
       }),
     });
     if (!response.ok) {
-      throw Error("게시글 수정에 실패하였습니다.");
+      throw Error('게시글 수정에 실패하였습니다.');
     }
 
     selectPost.value = response.data().json();
-    alert("게시글을 수정하였습니다.");
-    navigateTo(`/boards/${postId}`);
+    alert('게시글을 수정하였습니다.');
+    router.push(`/boards/${id}`);
   } catch (error) {
     console.log(error.message);
   }
 };
 
-load(); //page 로드 시, 데이터를 미리 불러오도록 설정
+const isValidForm = computed(() => {
+  return !!tags.value && !!title.value && !!body.value;
+});
+
+onMounted(() => {
+  load(); // 페이지 로드 시, 데이터를 미리 불러오도록 설정
+});
 </script>
 <style></style>

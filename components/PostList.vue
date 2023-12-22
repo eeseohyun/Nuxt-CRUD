@@ -16,49 +16,54 @@
         <Post
           v-for="post in paginatedPosts"
           :key="post.id"
-          @goToPrev="goToPrev"
-          @goToNext="goToNext"
+          @moveToDetailPage="moveToDetailPage"
         />
       </tbody>
     </table>
     <Pagination
-      @currentPage="currentPage"
+      :currentPage="currentPage"
       :totalPages="totalPages"
-      :paginatedPosts="paginatedPosts"
+      @goToPrev="goToPrev"
+      @goToNext="goToNext"
     />
   </div>
 </template>
 <script setup>
-import Post from "./Post.vue";
-import Pagination from "./Pagination.vue";
-import { ref } from "vue";
-import { defineProps, defineEmits } from "vue";
-const props = defineProps(["fileteredPosts"]);
-const { fileteredPosts } = toRefs(props);
+import Post from './Post.vue';
+import Pagination from './Pagination.vue';
+import { ref, computed } from 'vue';
+import { defineProps, defineEmits } from 'vue';
+const props = defineProps(['filteredPosts']);
 
-const categories = ["id", "제목", "게시일", "분류태그"];
-const emit = defineEmits(["goToPrev", "goToNext"]);
+const categories = ['id', '제목', '게시일', '분류태그'];
+const emit = defineEmits(['goToPrev', 'goToNext']);
 const currentPage = ref(1);
 const perPage = 10;
 const totalPages = computed(() =>
-  Math.ceil(fileteredPosts.value.length / perPage)
+  Math.ceil((props.filteredPosts || []).length / perPage)
 );
 const paginatedPosts = computed(() => {
   const startIndex = (currentPage.value - 1) * perPage;
   const endIndex = currentPage.value * perPage;
-  return fileteredPosts.value.slice(startIndex, endIndex);
+  return props.filteredPosts.slice(startIndex, endIndex);
 });
 
-const goToPrev = () => {
-  if (currentPage > 1) {
-    emit("update-currentPage", currentPage - 1);
+const goToPrev = async () => {
+  if (currentPage.value > 1) {
+    currentPage.value -= 1;
+    await emit('goToPrev', currentPage.value);
   }
 };
 
-const goToNext = () => {
-  if (currentPage < totalPages) {
-    emit("update-currentPage", currentPage + 1);
+const goToNext = async () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value += 1;
+    await emit('goToNext', currentPage.value);
   }
+};
+
+const moveToDetailPage = (postId) => {
+  navigateTo(`/boards/${postId}`);
 };
 </script>
 <style></style>

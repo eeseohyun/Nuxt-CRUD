@@ -15,41 +15,42 @@
             <div class="mt-10">
               <label
                 for="tags"
-                class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+                class="text-sm font-medium text-gray-900 dark:text-gray-400"
                 >분류</label
               >
-              <select
-                v-model="tags"
-                class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 dark:bg-lime-700 dark:border-lime-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
-              >
-                <option value="all">전체</option>
-                <option value="FE">FE</option>
-                <option value="BE">BE</option>
-                <option value="design">디자인</option>
-                <option value="plan">기획</option>
-              </select>
+              <div class="mt-2 w-1/2">
+                <select
+                  required
+                  v-model="tags"
+                  class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full py-1.5 px-2"
+                >
+                  <option value="all">전체</option>
+                  <option value="FE">FE</option>
+                  <option value="BE">BE</option>
+                  <option value="design">디자인</option>
+                  <option value="plan">기획</option>
+                </select>
+              </div>
             </div>
             <div class="mt-10">
-              <div>
-                <label
-                  for="title"
-                  class="block text-sm font-medium leading-6 text-gray-900"
-                  >제목</label
+              <label
+                for="title"
+                class="block text-sm font-medium leading-6 text-gray-900"
+                >제목</label
+              >
+              <div class="mt-2">
+                <div
+                  class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2"
                 >
-                <div class="mt-2">
-                  <div
-                    class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-lime-400 sm:max-w-md"
-                  >
-                    <input
-                      type="text"
-                      name="title"
-                      id="title"
-                      autocomplete="title"
-                      v-model="title"
-                      required
-                      class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    autocomplete="title"
+                    v-model="title"
+                    required
+                    class="block flex-1 border-0 bg-transparent py-1.5 px-1 text-gray-900 placeholder:text-gray-400 focus:ring-black sm:text-sm sm:leading-6"
+                  />
                 </div>
               </div>
 
@@ -66,7 +67,7 @@
                     rows="10"
                     v-model="body"
                     required
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-lime-400 sm:text-sm sm:leading-6"
+                    class="block w-full rounded-md border-0 py-1.5 px-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -74,7 +75,7 @@
           </div>
         </div>
 
-        <div class="mt-6 flex items-center justify-end gap-x-6">
+        <div class="mt-6 flex items-center justify-end self-end gap-x-6">
           <button
             type="button"
             class="text-sm font-semibold leading-6 text-gray-900"
@@ -96,25 +97,25 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const title = ref("");
-const body = ref("");
-const tags = ref("");
+const title = ref('');
+const body = ref('');
+const tags = ref('');
 
 const cancelPost = () => {
   router.go(-1);
 };
 
 const submitPost = async () => {
-  const currentDate = new Date().toISOString().split("T")[0];
+  const currentDate = new Date().toISOString().split('T')[0];
 
   try {
-    const response = await fetch("http://localhost:3000/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch('http://localhost:3000/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         title: title.value,
         body: body.value,
@@ -125,14 +126,14 @@ const submitPost = async () => {
     if (response.ok) {
       const createdPost = await response.json();
       const postId = createdPost.id;
-      alert("게시글이 등록되었습니다!");
-      navigateTo("/boards/" + postId);
+      alert('게시글이 등록되었습니다!');
+      navigateTo('/boards/' + postId);
     } else {
-      alert("게시글 등록에 실패하였습니다. 다시 시도해주세요.");
+      alert('게시글 등록에 실패하였습니다. 다시 시도해주세요.');
     }
   } catch (error) {
     console.log(error);
-    alert("게시글 등록에 실패하였습니다. 다시 시도해주세요.");
+    alert('게시글 등록에 실패하였습니다. 다시 시도해주세요.');
   }
 };
 </script>
