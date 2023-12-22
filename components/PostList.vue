@@ -13,57 +13,62 @@
         </tr>
       </thead>
       <tbody>
-        <Post
-          v-for="post in paginatedPosts"
-          :key="post.id"
-          @moveToDetailPage="moveToDetailPage"
-        />
+        <Post v-for="post in paginatedData" :post="post" :key="post.id" />
       </tbody>
     </table>
     <Pagination
-      :currentPage="currentPage"
-      :totalPages="totalPages"
-      @goToPrev="goToPrev"
-      @goToNext="goToNext"
+      :current-page="pagination.currentPage"
+      :total-pages="Math.ceil(totalPages.length / limit)"
+      @go-to-prev="goToPrev"
+      @go-to-next="goToNext"
     />
   </div>
 </template>
 <script setup>
-import Post from './Post.vue';
-import Pagination from './Pagination.vue';
-import { ref, computed } from 'vue';
-import { defineProps, defineEmits } from 'vue';
-const props = defineProps(['filteredPosts']);
+import Post from "./Post.vue";
+import Pagination from "./Pagination.vue";
+import { ref, onMounted } from "vue";
+import { defineProps } from "vue";
+const { searchText, totalPages } = defineProps(["searchText", "totalPages"]);
 
-const categories = ['id', '제목', '게시일', '분류태그'];
-const emit = defineEmits(['goToPrev', 'goToNext']);
-const currentPage = ref(1);
-const perPage = 10;
-const totalPages = computed(() =>
-  Math.ceil((props.filteredPosts || []).length / perPage)
-);
-const paginatedPosts = computed(() => {
-  const startIndex = (currentPage.value - 1) * perPage;
-  const endIndex = currentPage.value * perPage;
-  return props.filteredPosts.slice(startIndex, endIndex);
+const categories = ["id", "제목", "게시일", "분류태그"];
+const limit = 10;
+const pagination = ref({
+  currentPage: 1,
+  limit: 10,
 });
+const paginatedData = ref([]);
+
+const fetchData = async () => {
+  const { data: responseData, pending } = await useFetch(
+    "http://localhost:3000/boards",
+    {
+      method: "GET",
+      query: {
+        currentPage: pagination.value.currentPage,
+        limit: pagination.value.limit,
+      },
+    }
+  );
+
+  if (!pending) {
+    paginatedData.value = responseData;
+  }
+};
+onMounted(() => fetchData());
 
 const goToPrev = async () => {
-  if (currentPage.value > 1) {
-    currentPage.value -= 1;
-    await emit('goToPrev', currentPage.value);
+  if (pagination.value.currentPage > 1) {
+    pagination.value.currentPage -= 1;
+    await fetchData();
   }
 };
 
 const goToNext = async () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value += 1;
-    await emit('goToNext', currentPage.value);
+  if (pagination.value.currentPage * limit < totalPages.length) {
+    pagination.value.currentPage += 1;
+    await fetchData();
   }
-};
-
-const moveToDetailPage = (postId) => {
-  navigateTo(`/boards/${postId}`);
 };
 </script>
 <style></style>
