@@ -1,8 +1,6 @@
 <script setup>
-import Loader from '~/components/Loader.vue';
+import Loader from "~/components/Loader.vue";
 
-const posts = ref([]);
-const error = ref(null);
 let isLoading = true;
 </script>
 <template>
