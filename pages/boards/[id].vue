@@ -1,51 +1,43 @@
 <template>
-  <div
-    class="bg-gray-100 flex flex-col items-center justify-center h-screen px-2 py-4"
-  >
-    <div class="flex flex-col w-full lg:w-1/2 h-full bg-white px-9 py-3">
-      <div class="w-auto flex justify-between items-center p-3">
-        <div>
-          <h2 class="text-xl font-semibold">{{ currentPost.title }}</h2>
-          <div class="flex gap-3">
-            <span class="text-sm text-gray-500">{{ currentPost.tags }}</span>
-            <span class="text-sm text-gray-500">{{
-              currentPost.updatedDate
-            }}</span>
-          </div>
-        </div>
-
-        <div class="flex gap-2">
-          <button
-            @click="moveToEditPage(currentPost.id)"
-            class="flex items-center bg-gray-300 text-white font-semibold py-2 px-2 rounded-md transition-colors duration-300"
-          >
-            <p class="text-white">수정</p>
-          </button>
-          <button
-            @click="callConfirm()"
-            class="flex items-center bg-rose-500 text-white font-semibold py-2 px-2 rounded-md transition-colors duration-300"
-          >
-            <p class="text-white">삭제</p>
-          </button>
-        </div>
-      </div>
-
-      <hr />
-      <div class="py-10 w-auto h-[400px] border-b border-1 p-3">
-        <p class="overflow-hidden">
-          {{ currentPost.body }}
-        </p>
-      </div>
-
-      <div class="mt-3 flex self-end">
-        <button
-          @click="moveToListPage"
-          class="flex items-center bg-gray-300 text-white font-semibold py-2 px-2 rounded-md transition-colors duration-300"
-        >
-          <p class="text-white">목록</p>
-        </button>
+  <div class="w-auto flex justify-between items-center p-3">
+    <div>
+      <h2 class="text-xl font-semibold">{{ currentPost.title }}</h2>
+      <div class="flex gap-3">
+        <span class="text-sm text-gray-500">{{ currentPost.tags }}</span>
+        <span class="text-sm text-gray-500">{{ currentPost.updatedDate }}</span>
       </div>
     </div>
+
+    <div class="flex gap-2">
+      <button
+        @click="moveToEditPage(currentPost.id)"
+        class="flex items-center bg-gray-300 text-white font-semibold py-2 px-2 rounded-md transition-colors duration-300"
+      >
+        <p class="text-white">수정</p>
+      </button>
+      <button
+        @click="callConfirm()"
+        class="flex items-center bg-rose-500 text-white font-semibold py-2 px-2 rounded-md transition-colors duration-300"
+      >
+        <p class="text-white">삭제</p>
+      </button>
+    </div>
+  </div>
+
+  <hr />
+  <div class="py-10 w-auto h-[400px] border-b border-1 p-3">
+    <p class="overflow-hidden">
+      {{ currentPost.body }}
+    </p>
+  </div>
+
+  <div class="mt-3 flex self-end">
+    <button
+      @click="moveToListPage"
+      class="flex items-center bg-gray-300 text-white font-semibold py-2 px-2 rounded-md transition-colors duration-300"
+    >
+      <p class="text-white">목록</p>
+    </button>
   </div>
 </template>
 <script setup>
@@ -73,7 +65,7 @@ const callConfirm = () => {
 };
 const deletePost = async () => {
   try {
-    const response = await fetch("http://localhost:3000/posts/" + id, {
+    const response = await fetch("http://localhost:3000/boards/" + id, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -86,7 +78,7 @@ const deletePost = async () => {
 };
 const load = async () => {
   try {
-    let response = await fetch("http://localhost:3000/posts/" + id);
+    let response = await fetch("http://localhost:3000/boards/" + id);
     if (!response.ok) {
       throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
     }
