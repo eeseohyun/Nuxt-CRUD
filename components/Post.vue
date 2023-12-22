@@ -20,5 +20,11 @@
     </td>
   </tr>
 </template>
-<script setup></script>
+<script setup>
+import { defineProps } from "vue";
+const { post } = defineProps(["post"]);
+const moveToDetailPage = (postId) => {
+  navigateTo(`/boards/${postId}`);
+};
+</script>
 <style></style>
