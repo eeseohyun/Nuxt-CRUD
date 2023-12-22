@@ -2,8 +2,8 @@
 
 <template>
   <div>
-    <Header>
-      <nuxt-page />
-    </Header>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
