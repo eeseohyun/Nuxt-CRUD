@@ -7,7 +7,9 @@
         >
       </div>
       <div class="flex items-center flex-shrink-0 text-white mr-6">
-        <NuxtLink to="/boards"><span class="text-md">공지사항</span></NuxtLink>
+        <NuxtLink to="/boards/_page=1"
+          ><span class="text-md">공지사항</span></NuxtLink
+        >
       </div>
     </nav>
     <slot></slot>
