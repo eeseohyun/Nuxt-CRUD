@@ -40,20 +40,20 @@
   <PostList :searchText="searchText" :totalPages="totalPages" />
 </template>
 <script setup>
-import PostList from "~/components/PostList.vue";
-import { ref } from "vue";
+import PostList from '~/components/PostList.vue';
+import { ref } from 'vue';
 
-const searchText = ref("");
+const searchText = ref('');
 const error = ref(null);
 const totalPages = ref([]);
 
 const load = async () => {
   try {
-    let response = await fetch("http://localhost:3000/boards", {
-      method: "GET",
+    let response = await fetch('http://localhost:3000/boards', {
+      method: 'GET',
     });
     if (!response.ok) {
-      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
+      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
     }
     totalPages.value = await response.json();
   } catch (err) {
@@ -63,7 +63,7 @@ const load = async () => {
 };
 load();
 const moveToCreatePage = () => {
-  return navigateTo("/boards/create");
+  return navigateTo('/boards/create');
 };
 </script>
 <style></style>
