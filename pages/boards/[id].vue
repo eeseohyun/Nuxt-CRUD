@@ -41,8 +41,9 @@
   </div>
 </template>
 <script setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
+const router = useRouter();
 const id = route.params.id;
 const currentPost = ref([]);
 const error = ref(null);
@@ -52,11 +53,11 @@ const moveToEditPage = (id) => {
 };
 
 const moveToListPage = () => {
-  navigateTo("/boards");
+  router.go(-1);
 };
 
 const callConfirm = () => {
-  if (confirm("정말 삭제하시겠습니까?")) {
+  if (confirm('정말 삭제하시겠습니까?')) {
     deletePost();
     moveToListPage();
   } else {
@@ -65,22 +66,22 @@ const callConfirm = () => {
 };
 const deletePost = async () => {
   try {
-    const response = await fetch("http://localhost:3000/boards/" + id, {
-      method: "DELETE",
+    const response = await fetch('http://localhost:3000/boards/' + id, {
+      method: 'DELETE',
     });
     if (!response.ok) {
-      throw Error("게시글 삭제에 실패하였습니다.");
+      throw Error('게시글 삭제에 실패하였습니다.');
     }
-    alert("삭제가 완료되었습니다.");
+    alert('삭제가 완료되었습니다.');
   } catch (error) {
     console.log(error.message);
   }
 };
 const load = async () => {
   try {
-    let response = await fetch("http://localhost:3000/boards/" + id);
+    let response = await fetch('http://localhost:3000/boards/' + id);
     if (!response.ok) {
-      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
+      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
     }
     currentPost.value = await response.json();
   } catch (err) {
