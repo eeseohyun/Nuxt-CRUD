@@ -13,62 +13,46 @@
         </tr>
       </thead>
       <tbody>
-        <Post v-for="post in paginatedData" :post="post" :key="post.id" />
+        <Post v-for="(post, idx) in paginatedData" :post="post" :key="idx" />
       </tbody>
     </table>
     <Pagination
       :current-page="pagination.currentPage"
       :total-pages="Math.ceil(totalPages.length / limit)"
-      @go-to-prev="goToPrev"
-      @go-to-next="goToNext"
     />
   </div>
 </template>
 <script setup>
-import Post from "./Post.vue";
-import Pagination from "./Pagination.vue";
-import { ref, onMounted } from "vue";
-import { defineProps } from "vue";
-const { searchText, totalPages } = defineProps(["searchText", "totalPages"]);
+import Post from './Post.vue';
+import Pagination from './Pagination.vue';
+import { ref, defineProps } from 'vue';
+import { useRoute } from 'vue-router';
 
-const categories = ["id", "제목", "게시일", "분류태그"];
+const { searchText, totalPages } = defineProps(['searchText', 'totalPages']);
+const route = useRoute();
+const categories = ['id', '제목', '게시일', '분류태그'];
 const limit = 10;
 const pagination = ref({
-  currentPage: 1,
-  limit: 10,
+  currentPage: +route.params.page,
+  searchText: '',
 });
+
 const paginatedData = ref([]);
 
 const fetchData = async () => {
-  const { data: responseData, pending } = await useFetch(
-    "http://localhost:3000/boards",
-    {
-      method: "GET",
-      query: {
-        currentPage: pagination.value.currentPage,
-        limit: pagination.value.limit,
-      },
-    }
-  );
-
-  if (!pending) {
-    paginatedData.value = responseData;
+  try {
+    const response = await fetch(
+      `http://localhost:3000/boards?_page=${pagination.value.currentPage}&_limit=${limit}`,
+      {
+        method: 'GET',
+      }
+    );
+    const data = await response.json();
+    paginatedData.value = data;
+  } catch (error) {
+    console.error(error);
   }
 };
-onMounted(() => fetchData());
-
-const goToPrev = async () => {
-  if (pagination.value.currentPage > 1) {
-    pagination.value.currentPage -= 1;
-    await fetchData();
-  }
-};
-
-const goToNext = async () => {
-  if (pagination.value.currentPage * limit < totalPages.length) {
-    pagination.value.currentPage += 1;
-    await fetchData();
-  }
-};
+fetchData();
 </script>
 <style></style>
