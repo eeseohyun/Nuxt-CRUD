@@ -1,5 +1,8 @@
 <template>
-  <form class="w-auto flex flex-col justify-center items-center p-3">
+  <UForm
+    class="w-auto flex flex-col justify-center items-center p-3"
+    :validate="validate"
+  >
     <div class="w-full">
       <div class="border-b border-gray-900/10 pb-12">
         <h2
@@ -8,66 +11,38 @@
           게시글 등록
         </h2>
 
-        <div class="mt-10">
-          <label
-            for="tags"
-            class="text-sm font-medium text-gray-900 dark:text-gray-400"
-            >분류</label
-          >
+        <UFormGroup label="분류" name="tags" class="mt-12">
           <div class="mt-2 w-1/2">
-            <select
-              required
-              v-model="tags"
-              class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full py-1.5 px-2"
-            >
-              <option value="all">전체</option>
-              <option value="FE">FE</option>
-              <option value="BE">BE</option>
-              <option value="design">디자인</option>
-              <option value="plan">기획</option>
-            </select>
+            <USelect
+              v-model="state.tags"
+              :options="options"
+              option-attribute="name"
+            />
           </div>
-        </div>
-        <div class="mt-10">
-          <label
-            for="title"
-            class="block text-sm font-medium leading-6 text-gray-900"
-            >제목</label
-          >
-          <div class="mt-2">
-            <div
-              class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2"
-            >
-              <input
-                type="text"
-                name="title"
-                id="title"
-                autocomplete="title"
-                v-model="title"
-                required
-                class="block flex-1 border-0 bg-transparent py-1.5 px-1 text-gray-900 placeholder:text-gray-400 focus:ring-black sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
+        </UFormGroup>
 
-          <div class="mt-4">
-            <label
-              for="body"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >내용</label
-            >
-            <div class="mt-2">
-              <textarea
-                id="body"
-                name="body"
-                rows="10"
-                v-model="body"
-                required
-                class="block w-full rounded-md border-0 py-1.5 px-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-        </div>
+        <UFormGroup label="제목" name="title" class="mt-4">
+          <UInput
+            type="text"
+            name="title"
+            id="title"
+            autocomplete="title"
+            v-model="state.title"
+            required
+            class="block flex-1 border-0 bg-transparent py-1.5 px-1 text-gray-900 placeholder:text-gray-400 focus:ring-black sm:text-sm sm:leading-6"
+          />
+        </UFormGroup>
+
+        <UFormGroup label="내용" name="body" class="mt-4">
+          <UTextarea
+            id="body"
+            name="body"
+            rows="10"
+            v-model="state.body"
+            required
+          />
+        </UFormGroup>
+        <span v-if="errors">{{ errors.message }}</span>
       </div>
     </div>
 
@@ -82,40 +57,62 @@
       <button
         @click.prevent="submitPost"
         type="submit"
-        :disabled="!title || !body || !tags"
         class="rounded-md bg-lime-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-lime-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
         등록
       </button>
     </div>
-  </form>
+  </UForm>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const title = ref("");
-const body = ref("");
-const tags = ref("");
+
+const state = reactive({
+  title: undefined,
+  body: undefined,
+  tags: undefined,
+});
 
 const cancelPost = () => {
   router.go(-1);
 };
+const options = [
+  {
+    name: "전체",
+    value: "all",
+  },
+  {
+    name: "FE",
+    value: "FE",
+  },
+  {
+    name: "BE",
+    value: "BE",
+  },
+  {
+    name: "디자인",
+    value: "design",
+  },
+  {
+    name: "기획",
+    value: "plan",
+  },
+];
 
 const submitPost = async () => {
   const currentDate = new Date().toISOString().split("T")[0];
 
   try {
-    const response = await fetch("http://localhost:3000/boards", {
+    const response = await fetch("http://192.168.1.88:3000/boards", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: title.value,
-        body: body.value,
+        ...state,
         updatedDate: currentDate,
-        tags: tags.value,
       }),
     });
     if (response.ok) {
@@ -130,6 +127,17 @@ const submitPost = async () => {
     console.log(error);
     alert("게시글 등록에 실패하였습니다. 다시 시도해주세요.");
   }
+};
+
+const validate = (state) => {
+  const errors = [];
+  if (!state.title)
+    errors.push({ path: "title", message: "제목을 입력해주세요" });
+  if (!state.body)
+    errors.push({ path: "body", message: "내용을 입력해주세요" });
+  if (!state.tags)
+    errors.push({ path: "tags", message: "해당 태그를 선택해주세요" });
+  return errors;
 };
 </script>
 <style></style>

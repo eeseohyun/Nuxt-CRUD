@@ -55,7 +55,7 @@ console.log(searchText.value);
 const load = async () => {
   try {
     if (searchText.value) {
-      const response = await fetch("http://localhost:3000/boards", {
+      const response = await fetch("http://192.168.1.88:3000/boards", {
         method: "GET",
         query: {
           title: searchText.value,
@@ -64,7 +64,7 @@ const load = async () => {
       const data = await response.json();
       totalPages.value = data.length;
     }
-    const response = await fetch("http://localhost:3000/boards", {
+    const response = await fetch("http://192.168.1.88:3000/boards", {
       method: "GET",
     });
     if (!response.ok) {

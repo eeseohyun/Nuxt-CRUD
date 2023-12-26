@@ -26,9 +26,7 @@
 
   <hr />
   <div class="py-10 w-auto h-[400px] border-b border-1 p-3">
-    <p class="overflow-hidden">
-      {{ currentPost.body }}
-    </p>
+    <pre class="overflow-hidden">{{ currentPost.body }}</pre>
   </div>
 
   <div class="mt-3 flex self-end">
@@ -41,7 +39,7 @@
   </div>
 </template>
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 const id = route.params.id;
@@ -53,11 +51,11 @@ const moveToEditPage = (id) => {
 };
 
 const moveToListPage = () => {
-  router.go(-1);
+  navigateTo(`/boards/page=1`);
 };
 
 const callConfirm = () => {
-  if (confirm('정말 삭제하시겠습니까?')) {
+  if (confirm("정말 삭제하시겠습니까?")) {
     deletePost();
     moveToListPage();
   } else {
@@ -66,22 +64,22 @@ const callConfirm = () => {
 };
 const deletePost = async () => {
   try {
-    const response = await fetch('http://localhost:3000/boards/' + id, {
-      method: 'DELETE',
+    const response = await fetch("http://192.168.1.88:3000/boards/" + id, {
+      method: "DELETE",
     });
     if (!response.ok) {
-      throw Error('게시글 삭제에 실패하였습니다.');
+      throw Error("게시글 삭제에 실패하였습니다.");
     }
-    alert('삭제가 완료되었습니다.');
+    alert("삭제가 완료되었습니다.");
   } catch (error) {
     console.log(error.message);
   }
 };
 const load = async () => {
   try {
-    let response = await fetch('http://localhost:3000/boards/' + id);
+    let response = await fetch("http://192.168.1.88:3000/boards/" + id);
     if (!response.ok) {
-      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
+      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
     }
     currentPost.value = await response.json();
   } catch (err) {

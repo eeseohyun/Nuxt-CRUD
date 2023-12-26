@@ -88,8 +88,8 @@
   </form>
 </template>
 <script setup>
-import { ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 const selectPost = ref({});
 const router = useRouter();
@@ -103,11 +103,11 @@ onMounted(async () => {
   const route = useRoute();
   const id = route.params.id;
   try {
-    let response = await fetch('http://localhost:3000/boards/' + id, {
-      method: 'GET',
+    let response = await fetch("http://192.168.1.88:3000/boards/" + id, {
+      method: "GET",
     });
     if (!response.ok) {
-      throw Error('⚠️ 데이터를 읽어올 수 없습니다!');
+      throw Error("⚠️ 데이터를 읽어올 수 없습니다!");
     }
     selectPost.value = await response.json();
   } catch (err) {
@@ -117,12 +117,12 @@ onMounted(async () => {
 });
 
 const editPost = async (postId) => {
-  const updateDate = new Date().toISOString().split('T')[0];
+  const updateDate = new Date().toISOString().split("T")[0];
   try {
-    const response = await fetch(`http://localhost:3000/boards/${postId}`, {
-      method: 'PUT',
+    const response = await fetch(`http://192.168.1.88:3000/boards/${postId}`, {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         ...selectPost.value,
@@ -130,11 +130,11 @@ const editPost = async (postId) => {
       }),
     });
     if (!response.ok) {
-      throw Error('게시글 수정에 실패하였습니다.');
+      throw Error("게시글 수정에 실패하였습니다.");
     }
     //selectPost.value = response.data().json();
-    alert('게시글을 수정하였습니다.');
-    return router.push('/boards/' + postId);
+    alert("게시글을 수정하였습니다.");
+    return router.push("/boards/" + postId);
   } catch (error) {
     console.log(error.message);
   }

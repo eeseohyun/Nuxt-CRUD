@@ -36,7 +36,7 @@ const paginatedData = ref([]);
 const fetchData = async () => {
   try {
     const response = await fetch(
-      `http://localhost:3000/boards?_page=${pagination.value.currentPage}&_limit=10`,
+      `http://192.168.1.88:3000/boards?_sort=id&_order=desc&_page=${pagination.value.currentPage}&_limit=10`,
       {
         method: "GET",
       }
