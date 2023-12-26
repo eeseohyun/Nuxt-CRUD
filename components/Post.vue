@@ -24,7 +24,7 @@
 import { defineProps } from "vue";
 const { post } = defineProps(["post"]);
 const moveToDetailPage = (postId) => {
-  navigateTo(`/boards/${postId}`);
+  return navigateTo(`/boards/${postId}`);
 };
 </script>
 <style></style>
