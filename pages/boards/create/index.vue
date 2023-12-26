@@ -82,6 +82,7 @@
       <button
         @click.prevent="submitPost"
         type="submit"
+        :disabled="!title || !body || !tags"
         class="rounded-md bg-lime-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-lime-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
         등록
